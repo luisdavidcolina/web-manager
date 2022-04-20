@@ -43,13 +43,24 @@ const Home = () => {
             setItemSelected(newSelected)
           }}
         >
-          {items.map((item) => {
-            return (
-              <option value={item.ID} key={item.ID}>
-                {item.ID} - {item.LONGNAME} - {'Category'}
-              </option>
-            )
-          })}
+          {items
+            .sort((a, b) => {
+              if (a.ID > b.ID) {
+                return 1
+              }
+              if (a.ID < b.ID) {
+                return -1
+              }
+              // a must be equal to b
+              return 0
+            })
+            .map((item) => {
+              return (
+                <option value={item.ID} key={item.ID}>
+                  {item.ID} - {item.LONGNAME} - {'Category'}
+                </option>
+              )
+            })}
         </select>
         <br />
         <br />

@@ -6,11 +6,15 @@ import logger from '@/pages/api/log'
 const config = {
   user: 'sa',
   password: 'Soporte23',
-  server: 'localhost',
+  server: 'ALOHABOH\\SQLEXPRESS',
   database: 'CFCStandaloneDB',
+  options: {
+    trustServerCertificate: true,
+  },
 }
 
 const itmFile = `${'c:\\Bootdrv\\Aloha\\newDATA\\ITM.DBF'}`
+const itmFileData = `${'c:\\Bootdrv\\Aloha\\DATA\\ITM.DBF'}`
 const fieldDescriptors: any = [
   { name: 'ID', type: 'N', size: 10, decimalPlaces: 0 },
   { name: 'OWNERID', type: 'N', size: 5, decimalPlaces: 0 },
@@ -147,9 +151,26 @@ handler.post(async (req, res) => {
       }
       let dbf = await DBFFile.create(itmFile, fieldDescriptors)
       await dbf.appendRecords(records)
-      console.log(`${records.length} records added.`)
-      sql.connect(config, function (err) {
-        if (err) console.log(err)
+      fs.unlink(itmFileData, async (err2) => {
+        if (err2) {
+          console.log(err2)
+        }
+        let dbf2 = await DBFFile.create(itmFileData, fieldDescriptors)
+        await dbf2.appendRecords(records)
+        const { ID, PRICE } = body
+        sql.connect(config, function (err) {
+          if (err) console.log(err)
+          let query = `UPDATE Item
+          SET DefaultPrice = '${PRICE}'
+          WHERE Number = '${ID}'`
+
+          sql.query(query, (error, results, fields) => {
+            if (error) {
+              return console.error(error.message)
+            }
+            logger.info(JSON.stringify(results))
+          })
+        })
       })
 
       res.json('ok')
