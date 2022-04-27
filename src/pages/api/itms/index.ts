@@ -143,37 +143,21 @@ handler.get(async (req, res) => {
 handler.post(async (req, res) => {
   try {
     const { body } = req
-    let dbfOrg = await DBFFile.open(itmFile)
-    let records = await dbfOrg.readRecords()
-    fs.unlink(itmFile, async (err) => {
-      if (err) {
-        console.log(err)
-      }
-      let dbf = await DBFFile.create(itmFile, fieldDescriptors)
-      await dbf.appendRecords(records)
-      fs.unlink(itmFileData, async (err2) => {
-        if (err2) {
-          console.log(err2)
+    const { ID, PRICE } = body
+    sql.connect(config, function (err) {
+      if (err) console.log(err)
+      let query = `UPDATE Item
+      SET DefaultPrice = '${PRICE}'
+      WHERE Number = '${ID}'`
+
+      sql.query(query, (error, results, fields) => {
+        if (error) {
+          res.json(error)
+          logger.error(error)
         }
-        let dbf2 = await DBFFile.create(itmFileData, fieldDescriptors)
-        await dbf2.appendRecords(records)
-        const { ID, PRICE } = body
-        sql.connect(config, function (err) {
-          if (err) console.log(err)
-          let query = `UPDATE Item
-          SET DefaultPrice = '${PRICE}'
-          WHERE Number = '${ID}'`
-
-          sql.query(query, (error, results, fields) => {
-            if (error) {
-              return console.error(error.message)
-            }
-            logger.info(JSON.stringify(results))
-          })
-        })
+        logger.info(JSON.stringify(results))
+        res.json('ok')
       })
-
-      res.json('ok')
     })
   } catch (e) {
     console.log(e)

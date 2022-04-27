@@ -15,20 +15,18 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <React.Fragment>
       <Head>
-        <title>PMS Inquiry</title>
+        <title>Luisda Manager</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-   
       </Head>
 
       <div
         style={{
           height: '100vh',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          maxHeight: '100vh',
+          padding: '50px',
         }}
       >
         <Component {...pageProps} />
