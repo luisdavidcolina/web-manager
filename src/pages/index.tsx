@@ -66,7 +66,7 @@ const Home = () => {
     const modalButton = document.getElementById('my-modal') as HTMLInputElement
     modalButton.click()
 
-    fetch('api/itms', {
+    fetch('api/itm', {
       method: 'POST',
       body: JSON.stringify(itemSelected),
       headers: {

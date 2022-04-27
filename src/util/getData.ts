@@ -1,6 +1,6 @@
 export const getData = async () => {
   try {
-    const response = await fetch('/api/itms')
+    const response = await fetch('/api/itm')
     const data = await response.json()
     const newData = data.sort((a, b) => {
       if (a.ID > b.ID) {
